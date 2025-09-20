@@ -1,7 +1,6 @@
 import { Storage } from '@google-cloud/storage';
 import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
-import path from 'path';
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,10 +16,22 @@ export async function POST(req: NextRequest) {
     }
 
     // Initialize Google Cloud Storage
-    const storage = new Storage({
-      keyFilename: path.join(process.cwd(), 'key.json'),
-      projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
-    });
+    let storage;
+    
+    if (process.env.GOOGLE_CLOUD_CLIENT_EMAIL && process.env.GOOGLE_CLOUD_PRIVATE_KEY) {
+      storage = new Storage({
+        projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
+        credentials: {
+          client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
+          private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        }
+      });
+    } else {
+      // Use default application credentials
+      storage = new Storage({
+        projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
+      });
+    }
     
     const bucketName = 'genai-3301'; // Your bucket name
 

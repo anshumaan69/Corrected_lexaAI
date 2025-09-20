@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Firestore } from '@google-cloud/firestore';
-import path from 'path';
 
 // Function to generate visualization from web intelligence results
 function generateWebIntelligenceVisualization(webResults: any[]): string {
@@ -50,10 +49,22 @@ export async function GET(req: NextRequest) {
     }
 
     // Initialize Firestore
-    const firestore = new Firestore({
-      keyFilename: path.join(process.cwd(), 'key.json'),
-      projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
-    });
+    let firestore;
+    
+    if (process.env.GOOGLE_CLOUD_CLIENT_EMAIL && process.env.GOOGLE_CLOUD_PRIVATE_KEY) {
+      firestore = new Firestore({
+        projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
+        credentials: {
+          client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
+          private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        }
+      });
+    } else {
+      // Use default application credentials
+      firestore = new Firestore({
+        projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
+      });
+    }
     
     const documentsRef = firestore.collection('documents');
     const q = documentsRef.where('filename', '==', id).limit(1);
