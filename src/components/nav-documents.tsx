@@ -38,13 +38,13 @@ export function NavDocuments({
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Documents</SidebarGroupLabel>
+      <SidebarGroupLabel className="text-gray-600 font-medium text-sm">Documents</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton asChild className="text-gray-700 hover:text-gray-900 hover:bg-gray-50">
               <a href={item.url}>
-                <item.icon />
+                <item.icon className="text-gray-600" />
                 <span>{item.name}</span>
               </a>
             </SidebarMenuButton>
@@ -52,28 +52,28 @@ export function NavDocuments({
               <DropdownMenuTrigger asChild>
                 <SidebarMenuAction
                   showOnHover
-                  className="data-[state=open]:bg-accent rounded-sm"
+                  className="data-[state=open]:bg-gray-100 rounded-sm text-gray-500 hover:text-gray-700"
                 >
                   <IconDots />
                   <span className="sr-only">More</span>
                 </SidebarMenuAction>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="w-24 rounded-lg"
+                className="w-24 rounded-lg bg-white border border-gray-200 shadow-lg"
                 side={isMobile ? "bottom" : "right"}
                 align={isMobile ? "end" : "start"}
               >
-                <DropdownMenuItem>
-                  <IconFolder />
+                <DropdownMenuItem className="text-gray-700 hover:bg-gray-50">
+                  <IconFolder className="text-gray-600" />
                   <span>Open</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <IconShare3 />
+                <DropdownMenuItem className="text-gray-700 hover:bg-gray-50">
+                  <IconShare3 className="text-gray-600" />
                   <span>Share</span>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem variant="destructive">
-                  <IconTrash />
+                <DropdownMenuSeparator className="bg-gray-200" />
+                <DropdownMenuItem variant="destructive" className="text-red-600 hover:bg-red-50">
+                  <IconTrash className="text-red-500" />
                   <span>Delete</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -81,8 +81,8 @@ export function NavDocuments({
           </SidebarMenuItem>
         ))}
         <SidebarMenuItem>
-          <SidebarMenuButton className="text-sidebar-foreground/70">
-            <IconDots className="text-sidebar-foreground/70" />
+          <SidebarMenuButton className="text-gray-500 hover:text-gray-700 hover:bg-gray-50">
+            <IconDots className="text-gray-500" />
             <span>More</span>
           </SidebarMenuButton>
         </SidebarMenuItem>

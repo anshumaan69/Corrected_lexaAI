@@ -1,8 +1,9 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
+import { Scale } from "lucide-react"
 import {
-  IconCamera,
   IconChartBar,
   IconDashboard,
   IconDatabase,
@@ -11,12 +12,14 @@ import {
   IconFileWord,
   IconFolder,
   IconHelp,
-  IconInnerShadowTop,
   IconListDetails,
   IconReport,
   IconSearch,
   IconSettings,
   IconUsers,
+  IconShield,
+  IconGlobe,
+  IconBrain,
 } from "@tabler/icons-react"
 
 import { NavDocuments } from "@/components/nav-documents"
@@ -35,80 +38,92 @@ import {
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "Legal Professional",
+    email: "user@example.com",
+    avatar: "/avatars/user.jpg",
   },
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: IconDashboard,
     },
     {
-      title: "Lifecycle",
-      url: "#",
+      title: "Document Analysis",
+      url: "/analysis",
+      icon: IconFileAi,
+    },
+    {
+      title: "Risk Assessment",
+      url: "/risk",
+      icon: IconShield,
+    },
+    {
+      title: "Compliance Check",
+      url: "/compliance",
       icon: IconListDetails,
     },
     {
-      title: "Analytics",
-      url: "#",
+      title: "Reports",
+      url: "/reports",
       icon: IconChartBar,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: IconUsers,
     },
   ],
   navClouds: [
     {
-      title: "Capture",
-      icon: IconCamera,
+      title: "AI Analysis",
+      icon: IconBrain,
       isActive: true,
       url: "#",
       items: [
         {
-          title: "Active Proposals",
+          title: "Plain Language Summaries",
           url: "#",
         },
         {
-          title: "Archived",
+          title: "Risk Assessment",
+          url: "#",
+        },
+        {
+          title: "Fraud Detection",
           url: "#",
         },
       ],
     },
     {
-      title: "Proposal",
+      title: "Legal Documents",
       icon: IconFileDescription,
       url: "#",
       items: [
         {
-          title: "Active Proposals",
+          title: "Contracts",
           url: "#",
         },
         {
-          title: "Archived",
+          title: "Agreements",
+          url: "#",
+        },
+        {
+          title: "Legal Notices",
           url: "#",
         },
       ],
     },
     {
-      title: "Prompts",
-      icon: IconFileAi,
+      title: "Constitutional",
+      icon: IconGlobe,
       url: "#",
       items: [
         {
-          title: "Active Proposals",
+          title: "Compliance Checks",
           url: "#",
         },
         {
-          title: "Archived",
+          title: "Indian Law Database",
+          url: "#",
+        },
+        {
+          title: "Legal Precedents",
           url: "#",
         },
       ],
@@ -121,29 +136,29 @@ const data = {
       icon: IconSettings,
     },
     {
-      title: "Get Help",
+      title: "Help & Support",
       url: "#",
       icon: IconHelp,
     },
     {
-      title: "Search",
+      title: "Search Legal DB",
       url: "#",
       icon: IconSearch,
     },
   ],
   documents: [
     {
-      name: "Data Library",
+      name: "Legal Library",
       url: "#",
       icon: IconDatabase,
     },
     {
-      name: "Reports",
+      name: "Analysis Reports",
       url: "#",
       icon: IconReport,
     },
     {
-      name: "Word Assistant",
+      name: "Document Templates",
       url: "#",
       icon: IconFileWord,
     },
@@ -152,28 +167,30 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
-      <SidebarHeader>
+    <Sidebar collapsible="offcanvas" className="bg-gray-50" {...props}>
+      <SidebarHeader className="bg-white border-b border-gray-200">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
+              className="data-[slot=sidebar-menu-button]:!p-1.5 hover:bg-gray-50"
             >
-              <a href="#">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">LexBharat AI</span>
-              </a>
+              <Link href="/" className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <Scale className="w-5 h-5 text-white" />
+                </div>
+                <span className="font-medium text-xl text-gray-900">LegalAI Demystifier</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="bg-white">
         <NavMain items={data.navMain} />
         <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="bg-white border-t border-gray-200">
         <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>
