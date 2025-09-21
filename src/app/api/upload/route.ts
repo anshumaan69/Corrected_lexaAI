@@ -15,40 +15,31 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Only PDF files are allowed' }, { status: 400 });
     }
 
-    // Function to initialize Google Cloud Storage
+    // Function to initialize Google Cloud Storage - SIMPLIFIED
     function initializeStorage() {
-      let storage;
-      
-      if (process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
-        // Method 1: Use complete service account JSON (EASIEST for Vercel)
-        const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
-        storage = new Storage({
-          projectId: credentials.project_id,
-          credentials: credentials
+      // For local development: use key file
+      if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+        return new Storage({
+          projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
+          keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
         });
-      } else if (process.env.CLIENT_EMAIL && process.env.PRIVATE_KEY) {
-        // Method 2: Use individual environment variables
-        storage = new Storage({
+      }
+      
+      // For Vercel: use environment variables
+      if (process.env.CLIENT_EMAIL && process.env.PRIVATE_KEY) {
+        return new Storage({
           projectId: process.env.PROJECT_ID || 'lexbharat',
           credentials: {
             client_email: process.env.CLIENT_EMAIL,
             private_key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
           }
         });
-      } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-        // Method 3: Use the service account key file (for local development)
-        storage = new Storage({
-          projectId: process.env.PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
-          keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-        });
-      } else {
-        // Method 4: Use default application credentials
-        storage = new Storage({
-          projectId: process.env.PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
-        });
       }
       
-      return storage;
+      // Fallback
+      return new Storage({
+        projectId: 'lexbharat',
+      });
     }
 
     // Initialize Google Cloud Storage only when needed
