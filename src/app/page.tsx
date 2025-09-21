@@ -70,7 +70,7 @@ export default function HomePage() {
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <Scale className="w-5 h-5 text-white" />
               </div>
-              <span className="font-medium text-xl text-gray-900">LegalAI Demystifier</span>
+              <span className="font-medium text-xl text-gray-900">LexBharat</span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
               <Link href="#features" className="text-gray-600 hover:text-gray-900 text-sm font-medium">Features</Link>
@@ -149,7 +149,7 @@ export default function HomePage() {
       <section className="py-20 bg-gray-50" id="features">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-normal text-gray-900 mb-4">Why choose LegalAI Demystifier?</h2>
+            <h2 className="text-3xl font-normal text-gray-900 mb-4">Why choose LexBharat?</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">Making Indian law accessible to everyone with AI-powered analysis</p>
           </div>
           
@@ -267,7 +267,7 @@ export default function HomePage() {
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <Scale className="w-5 h-5 text-white" />
               </div>
-              <span className="font-medium text-xl text-gray-900">LegalAI Demystifier</span>
+              <span className="font-medium text-xl text-gray-900">LexBharat</span>
             </div>
             
             <div className="flex items-center space-x-2 mb-6 md:mb-0">
@@ -287,7 +287,7 @@ export default function HomePage() {
               <Link href="/contact" className="text-gray-600 hover:text-gray-900 text-sm">Contact</Link>
             </div>
             
-            <p className="text-gray-500 text-sm">&copy; 2025 LegalAI Demystifier. Making law accessible.</p>
+            <p className="text-gray-500 text-sm">&copy; 2025 LexBharat. Making law accessible.</p>
           </div>
         </div>
       </footer>

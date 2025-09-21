@@ -179,7 +179,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                   <Scale className="w-5 h-5 text-white" />
                 </div>
-                <span className="font-medium text-xl text-gray-900">LegalAI Demystifier</span>
+                <span className="font-medium text-xl text-gray-900">LexBharat</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
