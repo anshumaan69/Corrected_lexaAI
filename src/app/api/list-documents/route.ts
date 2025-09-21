@@ -7,6 +7,7 @@ if (!admin.apps.length) {
   
   // Try to use environment variables, fallback to default application credentials
   if (process.env.GOOGLE_CLOUD_CLIENT_EMAIL && process.env.GOOGLE_CLOUD_PRIVATE_KEY) {
+    // Use environment variables (recommended for Vercel)
     const serviceAccount = {
       type: "service_account",
       project_id: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
@@ -20,6 +21,9 @@ if (!admin.apps.length) {
       client_x509_cert_url: process.env.GOOGLE_CLOUD_CLIENT_X509_CERT_URL
     };
     credential = admin.credential.cert(serviceAccount as admin.ServiceAccount);
+  } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+    // Use the service account key file (for local development)
+    credential = admin.credential.cert(process.env.GOOGLE_APPLICATION_CREDENTIALS);
   } else {
     // Use default application credentials (for development or when deployed on Google Cloud)
     credential = admin.credential.applicationDefault();
