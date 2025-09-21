@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     // Initialize Google Cloud Storage only when needed
     const storage = initializeStorage();
     
-    const bucketName = 'genai-3301'; // Your bucket name
+    const bucketName = process.env.FIREBASE_STORAGE_BUCKET || 'lexbharat.appspot.com';
 
     // Use a unique ID for the filename to avoid collisions
     const uniqueId = uuidv4();
