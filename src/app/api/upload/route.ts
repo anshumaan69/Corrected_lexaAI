@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
         projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
         credentials: {
           client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
-          private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+          private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY,
         }
       });
     } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
