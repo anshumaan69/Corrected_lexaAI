@@ -1,51 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import admin from 'firebase-admin';
-
-// Function to initialize Firebase Admin
-function initializeFirebaseAdmin() {
-  if (admin.apps.length) {
-    return admin.app();
-  }
-
-  let credential;
-  
-  // Try to use environment variables, fallback to default application credentials
-  if (process.env.CLIENT_EMAIL && process.env.PRIVATE_KEY) {
-    // Use environment variables (recommended for Vercel)
-    const serviceAccount = {
-      type: "service_account",
-      project_id: process.env.PROJECT_ID || 'lexbharat',
-      private_key_id: process.env.PRIVATE_KEY_ID,
-      private_key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
-      client_email: process.env.CLIENT_EMAIL,
-      client_id: process.env.CLIENT_ID,
-      auth_uri: "https://accounts.google.com/o/oauth2/auth",
-      token_uri: "https://oauth2.googleapis.com/token",
-      auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
-      client_x509_cert_url: `https://www.googleapis.com/robot/v1/metadata/x509/${encodeURIComponent(process.env.CLIENT_EMAIL)}`,
-      universe_domain: process.env.UNIVERSE_DOMAIN || "googleapis.com"
-    };
-    credential = admin.credential.cert(serviceAccount as admin.ServiceAccount);
-  } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-    // Use the service account key file (for local development)
-    credential = admin.credential.cert(process.env.GOOGLE_APPLICATION_CREDENTIALS);
-  } else {
-    // Use default application credentials (for development or when deployed on Google Cloud)
-    credential = admin.credential.applicationDefault();
-  }
-  
-  return admin.initializeApp({
-    credential: credential,
-    projectId: process.env.PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
-  });
-}
+import { getFirebaseAdmin } from '@/lib/firebase-admin';
 
 export async function GET(request: NextRequest) {
   try {
     console.log('Fetching all documents from Firestore...');
     
-    // Initialize Firebase Admin only when needed
-    initializeFirebaseAdmin();
+    const admin = getFirebaseAdmin();
     const db = admin.firestore();
     
     // Get all documents from the collection

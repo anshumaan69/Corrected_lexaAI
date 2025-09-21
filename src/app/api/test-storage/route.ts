@@ -1,38 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Storage } from '@google-cloud/storage';
+import { getStorage } from '@/lib/gcloud-storage';
 
 export async function GET(req: NextRequest) {
   try {
     console.log('Testing storage connection...');
     
-    // Test the storage initialization
-    let storage;
-    let authMethod = 'unknown';
-    
-    if (process.env.CLIENT_EMAIL && process.env.PRIVATE_KEY) {
-      console.log('Using new environment variables...');
-      authMethod = 'new_env_vars';
-      storage = new Storage({
-        projectId: process.env.PROJECT_ID || 'lexbharat',
-        credentials: {
-          client_email: process.env.CLIENT_EMAIL,
-          private_key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
-        }
-      });
-    } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-      console.log('Using key file path...');
-      authMethod = 'key_file';
-      storage = new Storage({
-        projectId: process.env.PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
-        keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-      });
-    } else {
-      console.log('Using default credentials...');
-      authMethod = 'default';
-      storage = new Storage({
-        projectId: process.env.PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
-      });
-    }
+    const storage = getStorage();
+    const authMethod = process.env.GOOGLE_APPLICATION_CREDENTIALS ? 'key_file' : 'env_vars';
 
     // Test bucket access
     const bucketName = process.env.FIREBASE_STORAGE_BUCKET || 'genai-3301';

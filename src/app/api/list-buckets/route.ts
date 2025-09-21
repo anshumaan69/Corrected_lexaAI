@@ -1,18 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Storage } from '@google-cloud/storage';
+import { getStorage } from '@/lib/gcloud-storage';
 
 export async function GET(req: NextRequest) {
   try {
     console.log('Listing available buckets...');
     
-    // Initialize storage with the credentials that work
-    const storage = new Storage({
-      projectId: process.env.PROJECT_ID || 'lexbharat',
-      credentials: {
-        client_email: process.env.CLIENT_EMAIL,
-        private_key: process.env.PRIVATE_KEY?.replace(/\\n/g, '\n'),
-      }
-    });
+    const storage = getStorage();
 
     // List all buckets to see what's available
     const [buckets] = await storage.getBuckets();

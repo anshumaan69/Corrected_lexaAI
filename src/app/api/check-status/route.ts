@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Firestore } from '@google-cloud/firestore';
+import { getFirestore } from '@/lib/gcloud-firestore';
 
 // Function to generate visualization from web intelligence results
 function generateWebIntelligenceVisualization(webResults: any[]): string {
@@ -39,35 +39,6 @@ function generateWebIntelligenceVisualization(webResults: any[]): string {
   return `data:image/svg+xml,${encodedSvg}`;
 }
 
-// Function to initialize Firestore
-function initializeFirestore() {
-  let firestore;
-  
-  if (process.env.CLIENT_EMAIL && process.env.PRIVATE_KEY) {
-    // Use environment variables (recommended for Vercel)
-    firestore = new Firestore({
-      projectId: process.env.PROJECT_ID || 'lexbharat',
-      credentials: {
-        client_email: process.env.CLIENT_EMAIL,
-        private_key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
-      }
-    });
-  } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-    // Use the service account key file (for local development)
-    firestore = new Firestore({
-      projectId: process.env.PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
-      keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    });
-  } else {
-    // Use default application credentials
-    firestore = new Firestore({
-      projectId: process.env.PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
-    });
-  }
-  
-  return firestore;
-}
-
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -77,16 +48,15 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ message: 'Document ID is required' }, { status: 400 });
     }
 
-    // Initialize Firestore only when needed
-    const firestore = initializeFirestore();
+    // Use the centralized Firestore client
+    const firestore = getFirestore();
     
     const documentsRef = firestore.collection('documents');
     const q = documentsRef.where('filename', '==', id).limit(1);
 
     try {
       const snapshot = await q.get();
-      if (snapshot.empty) {
-        const snapshot = await q.get();
+
       if (snapshot.empty) {
         console.log(`No document found for: ${id} - Analysis not started or not found`);
         return NextResponse.json({ 
@@ -94,69 +64,37 @@ export async function GET(req: NextRequest) {
           error: 'NO_ANALYSIS_DATA'
         }, { status: 404 });
       }
-
+      
       const doc = snapshot.docs[0].data();
       console.log('Found document in Firestore:', JSON.stringify(doc, null, 2));
       console.log('Available fields:', Object.keys(doc));
       console.log('Has visualization_url:', !!doc.visualization_url);
       console.log('Has constitutional_analysis:', !!doc.constitutional_analysis);
       console.log('Has web_intelligence_results:', !!doc.web_intelligence_results);
-      
+
       // Check if we have analysis results (either visualization_url, constitutional_analysis, or web_intelligence_results)
       if (doc.visualization_url || doc.constitutional_analysis || doc.web_intelligence_results) {
         // Use the actual data structure from Firestore
         const transformedData = {
-          constitutional_analysis: doc.constitutional_analysis || {
-            compliance_status: doc.compliance_status || "Analysis Complete"
-          },
+          constitutional_analysis: doc.constitutional_analysis || { compliance_status: doc.compliance_status || "Analysis Complete" },
           visualization_url: doc.visualization_url || generateWebIntelligenceVisualization(doc.web_intelligence_results),
           web_intelligence_results: doc.web_intelligence_results,
           web_search_status: doc.web_search_status,
           web_search_timestamp: doc.web_search_timestamp,
           analysis_status: doc.analysis_status,
           analysis_timestamp: doc.analysis_timestamp,
-          raw_firestore_data: doc // Include raw data for debugging
         };
         
         console.log('Transformed data being sent:', JSON.stringify(transformedData, null, 2));
         return NextResponse.json(transformedData, { status: 200 });
       } else {
         console.log('Document found but no analysis data available');
-        return NextResponse.json({ 
-          message: 'Analysis incomplete - No constitutional analysis data available',
-          error: 'NO_ANALYSIS_DATA',
-          status: doc.status || 'UNKNOWN',
-          filename: doc.filename || id
+        return NextResponse.json({
+            message: 'Analysis incomplete - No constitutional analysis data available',
+            error: 'NO_ANALYSIS_DATA',
+            status: doc.status || 'UNKNOWN',
+            filename: doc.filename || id
         }, { status: 202 }); // 202 Accepted means "still working"
-      }
-      }
-
-      const doc = snapshot.docs[0].data();
-      console.log('Found document in Firestore:', JSON.stringify(doc, null, 2));
-      console.log('Available fields:', Object.keys(doc));
-      console.log('Has visualization_url:', !!doc.visualization_url);
-      console.log('Has web_intelligence_results:', !!doc.web_intelligence_results);
-      
-      // Check if we have analysis results (either visualization_url, constitutional_analysis, or web_intelligence_results)
-      if (doc.visualization_url || doc.constitutional_analysis || doc.web_intelligence_results) {
-        // Use the actual data structure from Firestore
-        const transformedData = {
-          constitutional_analysis: doc.constitutional_analysis || {
-            compliance_status: doc.compliance_status || "Analysis Complete"
-          },
-          visualization_url: doc.visualization_url || generateWebIntelligenceVisualization(doc.web_intelligence_results),
-          web_intelligence_results: doc.web_intelligence_results,
-          web_search_status: doc.web_search_status,
-          web_search_timestamp: doc.web_search_timestamp,
-          analysis_status: doc.analysis_status,
-          analysis_timestamp: doc.analysis_timestamp,
-          raw_firestore_data: doc // Include raw data for debugging
-        };
-        
-        console.log('Transformed data being sent:', JSON.stringify(transformedData, null, 2));
-        return NextResponse.json(transformedData, { status: 200 });
-      } else {
-        return NextResponse.json({ message: 'Processing...' }, { status: 202 }); // 202 Accepted means "still working"
       }
     } catch (firestoreError) {
       console.error('Error fetching from Firestore:', firestoreError);

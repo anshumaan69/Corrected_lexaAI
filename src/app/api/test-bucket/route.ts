@@ -1,18 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Storage } from '@google-cloud/storage';
+import { getStorage } from '@/lib/gcloud-storage';
 
 export async function GET(req: NextRequest) {
   try {
     console.log('Testing specific bucket access...');
     
-    // Initialize storage with current credentials
-    const storage = new Storage({
-      projectId: process.env.PROJECT_ID || 'lexbharat',
-      credentials: {
-        client_email: process.env.CLIENT_EMAIL,
-        private_key: process.env.PRIVATE_KEY?.replace(/\\n/g, '\n'),
-      }
-    });
+    const storage = getStorage();
 
     // Test the specific bucket that should exist
     const bucketName = process.env.FIREBASE_STORAGE_BUCKET || 'genai-3301';
