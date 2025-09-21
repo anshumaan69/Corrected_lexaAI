@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
       }
     });
 
-    const bucketName = process.env.FIREBASE_STORAGE_BUCKET || 'lexbharat.appspot.com';
+    const bucketName = process.env.FIREBASE_STORAGE_BUCKET || 'genai-3301';
     const bucket = storage.bucket(bucketName);
     
     // Create a test file

@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Test bucket access
-    const bucketName = process.env.FIREBASE_STORAGE_BUCKET || 'lexbharat.appspot.com';
+    const bucketName = process.env.FIREBASE_STORAGE_BUCKET || 'genai-3301';
     console.log('Testing bucket:', bucketName);
     
     const bucket = storage.bucket(bucketName);

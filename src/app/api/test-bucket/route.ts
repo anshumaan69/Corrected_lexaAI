@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     });
 
     // Test the specific bucket that should exist
-    const bucketName = process.env.FIREBASE_STORAGE_BUCKET || 'lexbharat.appspot.com';
+    const bucketName = process.env.FIREBASE_STORAGE_BUCKET || 'genai-3301';
     console.log('Testing bucket:', bucketName);
     
     const bucket = storage.bucket(bucketName);
