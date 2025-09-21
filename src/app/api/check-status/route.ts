@@ -43,25 +43,25 @@ function generateWebIntelligenceVisualization(webResults: any[]): string {
 function initializeFirestore() {
   let firestore;
   
-  if (process.env.GOOGLE_CLOUD_CLIENT_EMAIL && process.env.GOOGLE_CLOUD_PRIVATE_KEY) {
+  if (process.env.CLIENT_EMAIL && process.env.PRIVATE_KEY) {
     // Use environment variables (recommended for Vercel)
     firestore = new Firestore({
-      projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
+      projectId: process.env.PROJECT_ID || 'lexbharat',
       credentials: {
-        client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
-        private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY,
+        client_email: process.env.CLIENT_EMAIL,
+        private_key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
       }
     });
   } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
     // Use the service account key file (for local development)
     firestore = new Firestore({
-      projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
+      projectId: process.env.PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
       keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
     });
   } else {
     // Use default application credentials
     firestore = new Firestore({
-      projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
+      projectId: process.env.PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
     });
   }
   
