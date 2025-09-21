@@ -39,6 +39,35 @@ function generateWebIntelligenceVisualization(webResults: any[]): string {
   return `data:image/svg+xml,${encodedSvg}`;
 }
 
+// Function to initialize Firestore
+function initializeFirestore() {
+  let firestore;
+  
+  if (process.env.GOOGLE_CLOUD_CLIENT_EMAIL && process.env.GOOGLE_CLOUD_PRIVATE_KEY) {
+    // Use environment variables (recommended for Vercel)
+    firestore = new Firestore({
+      projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
+      credentials: {
+        client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
+        private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY,
+      }
+    });
+  } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+    // Use the service account key file (for local development)
+    firestore = new Firestore({
+      projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
+      keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    });
+  } else {
+    // Use default application credentials
+    firestore = new Firestore({
+      projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
+    });
+  }
+  
+  return firestore;
+}
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -48,30 +77,8 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ message: 'Document ID is required' }, { status: 400 });
     }
 
-    // Initialize Firestore
-    let firestore;
-    
-    if (process.env.GOOGLE_CLOUD_CLIENT_EMAIL && process.env.GOOGLE_CLOUD_PRIVATE_KEY) {
-      // Use environment variables (recommended for Vercel)
-      firestore = new Firestore({
-        projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
-        credentials: {
-          client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
-          private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY,
-        }
-      });
-    } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-      // Use the service account key file (for local development)
-      firestore = new Firestore({
-        projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
-        keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-      });
-    } else {
-      // Use default application credentials
-      firestore = new Firestore({
-        projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
-      });
-    }
+    // Initialize Firestore only when needed
+    const firestore = initializeFirestore();
     
     const documentsRef = firestore.collection('documents');
     const q = documentsRef.where('filename', '==', id).limit(1);

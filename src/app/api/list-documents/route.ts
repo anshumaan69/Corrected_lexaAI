@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import admin from 'firebase-admin';
 
-// Initialize Firebase Admin if not already initialized
-if (!admin.apps.length) {
+// Function to initialize Firebase Admin
+function initializeFirebaseAdmin() {
+  if (admin.apps.length) {
+    return admin.app();
+  }
+
   let credential;
   
   // Try to use environment variables, fallback to default application credentials
@@ -29,17 +33,19 @@ if (!admin.apps.length) {
     credential = admin.credential.applicationDefault();
   }
   
-  admin.initializeApp({
+  return admin.initializeApp({
     credential: credential,
     projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
   });
 }
 
-const db = admin.firestore();
-
 export async function GET(request: NextRequest) {
   try {
     console.log('Fetching all documents from Firestore...');
+    
+    // Initialize Firebase Admin only when needed
+    initializeFirebaseAdmin();
+    const db = admin.firestore();
     
     // Get all documents from the collection
     const snapshot = await db.collection('document_analysis').get();

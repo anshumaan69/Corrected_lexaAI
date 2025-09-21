@@ -15,30 +15,37 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Only PDF files are allowed' }, { status: 400 });
     }
 
-    // Initialize Google Cloud Storage
-    let storage;
-    
-    if (process.env.GOOGLE_CLOUD_CLIENT_EMAIL && process.env.GOOGLE_CLOUD_PRIVATE_KEY) {
-      // Use environment variables (recommended for Vercel)
-      storage = new Storage({
-        projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
-        credentials: {
-          client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
-          private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY,
-        }
-      });
-    } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-      // Use the service account key file (for local development)
-      storage = new Storage({
-        projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
-        keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-      });
-    } else {
-      // Use default application credentials
-      storage = new Storage({
-        projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
-      });
+    // Function to initialize Google Cloud Storage
+    function initializeStorage() {
+      let storage;
+      
+      if (process.env.GOOGLE_CLOUD_CLIENT_EMAIL && process.env.GOOGLE_CLOUD_PRIVATE_KEY) {
+        // Use environment variables (recommended for Vercel)
+        storage = new Storage({
+          projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
+          credentials: {
+            client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
+            private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY,
+          }
+        });
+      } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+        // Use the service account key file (for local development)
+        storage = new Storage({
+          projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
+          keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+        });
+      } else {
+        // Use default application credentials
+        storage = new Storage({
+          projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'lexbharat',
+        });
+      }
+      
+      return storage;
     }
+
+    // Initialize Google Cloud Storage only when needed
+    const storage = initializeStorage();
     
     const bucketName = 'genai-3301'; // Your bucket name
 
