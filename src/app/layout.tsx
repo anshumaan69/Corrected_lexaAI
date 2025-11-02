@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { FloatingChatButton } from "@/components/floating-chat-button";
 import "./globals.css";
 
 const bricolageGrotesque = Bricolage_Grotesque({
@@ -36,6 +37,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <FloatingChatButton />
         </ThemeProvider>
       </body>
     </html>

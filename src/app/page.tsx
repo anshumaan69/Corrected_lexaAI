@@ -115,6 +115,10 @@ export default function HomePage() {
               <Link href="#features" className="text-gray-600 hover:text-gray-900 text-sm font-medium">Features</Link>
               <Link href="#how-it-works" className="text-gray-600 hover:text-gray-900 text-sm font-medium">How it Works</Link>
               <Link href="#security" className="text-gray-600 hover:text-gray-900 text-sm font-medium">Security</Link>
+              <Link href="/chat" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 text-sm font-medium">
+                <MessageSquare className="w-4 h-4 inline-block mr-1" />
+                Legal Chat
+              </Link>
               <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6">
                 <Link href="/dashboard">Get Started</Link>
               </Button>

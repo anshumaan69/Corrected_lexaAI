@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Scale } from "lucide-react"
+import { Scale, MessageSquare } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { ShareButton } from "@/components/share-button"
@@ -17,6 +17,12 @@ export function SiteHeader() {
         </Link>
         
         <div className="ml-auto flex items-center gap-2">
+          <Button asChild variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900 text-sm">
+            <Link href="/chat" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+              <MessageSquare className="w-4 h-4" />
+              Legal Chat
+            </Link>
+          </Button>
           <Button asChild variant="outline" size="sm" className="text-gray-600 hover:text-gray-900 text-sm">
             <Link href="/">Back to Home</Link>
           </Button>
