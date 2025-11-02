@@ -378,7 +378,8 @@ export function DashboardContent() {
                 <CardContent className="p-6">
                   <div className="text-center">
                     <h3 className="text-lg font-medium text-gray-900 mb-3">Upload Legal Documents</h3>
-                    <p className="text-gray-600 text-sm mb-4">Transform complex legal documents into simple insights</p>
+                    <p className="text-gray-600 text-sm mb-2">Transform complex legal documents into simple insights</p>
+                    <p className="text-amber-600 text-sm mb-4">Note: Only PDF files are supported</p>
                     
                     {/* Processing Status */}
                     {isProcessingPdf && (

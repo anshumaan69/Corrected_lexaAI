@@ -2,6 +2,10 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+gsap.registerPlugin(ScrollTrigger);
 import { 
   Upload,
   FileText,
@@ -24,6 +28,41 @@ import { Input } from '@/components/ui/input';
 
 export default function HomePage() {
   const router = useRouter();
+
+  useEffect(() => {
+    gsap.fromTo(".hero-title", { opacity: 0, y: -50 }, { opacity: 1, y: 0, duration: 1, ease: "power3.out" });
+    gsap.fromTo(".hero-search", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1, ease: "power3.out", delay: 0.5 });
+    gsap.fromTo(".hero-buttons", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1, ease: "power3.out", delay: 1 });
+    gsap.fromTo(".hero-animation", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 1, ease: "power3.out", delay: 1.5 });
+
+    gsap.utils.toArray<HTMLElement>(".value-prop-card").forEach((card, i) => {
+      gsap.fromTo(card, { opacity: 0, y: 50 }, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: card,
+          start: "top 80%",
+        },
+        delay: i * 0.2
+      });
+    });
+
+    gsap.utils.toArray<HTMLElement>(".how-it-works-step").forEach((step, i) => {
+      gsap.fromTo(step, { opacity: 0, y: 50 }, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: step,
+          start: "top 80%",
+        },
+        delay: i * 0.2
+      });
+    });
+  }, []);
   const valueProps = [
     {
       icon: <div className="flex items-center gap-2"><FileText className="w-5 h-5" /><ArrowRight className="w-4 h-4" /><MessageSquare className="w-5 h-5" /></div>,
@@ -87,12 +126,12 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h1 className="text-5xl font-normal text-gray-900 mb-6 leading-tight">
+          <h1 className="text-5xl font-normal text-gray-900 mb-6 leading-tight hero-title">
             Transform complex Indian legal documents into simple insights
           </h1>
           
           {/* Google-style Search Bar */}
-          <div className="max-w-2xl mx-auto mb-8">
+          <div className="max-w-2xl mx-auto mb-8 hero-search">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <FileText className="h-5 w-5 text-gray-400" />
@@ -113,7 +152,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 hero-buttons">
             <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8 py-3 shadow-md hover:shadow-lg transition-shadow">
               <Link href="/dashboard">
                 <Upload className="w-5 h-5 mr-2" />
@@ -127,7 +166,7 @@ export default function HomePage() {
           </div>
 
           {/* Subtle Animation Placeholder */}
-          <div className="max-w-lg mx-auto">
+          <div className="max-w-lg mx-auto hero-animation">
             <div className="bg-gray-100 rounded-2xl p-8 relative overflow-hidden">
               <div className="flex items-center justify-center space-x-8">
                 <div className="text-center">
@@ -155,7 +194,7 @@ export default function HomePage() {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {valueProps.map((prop, index) => (
-              <Card key={index} className="bg-white border-0 shadow-sm hover:shadow-md transition-shadow rounded-2xl">
+              <Card key={index} className="bg-white border-0 shadow-sm hover:shadow-md transition-shadow rounded-2xl value-prop-card">
                 <CardHeader className="text-center pb-2">
                   <div className="flex justify-center mb-4 text-blue-600">
                     {prop.icon}
@@ -181,7 +220,7 @@ export default function HomePage() {
           
           <div className="grid md:grid-cols-4 gap-8">
             {steps.map((step, index) => (
-              <div key={index} className="text-center relative">
+              <div key={index} className="text-center relative how-it-works-step">
                 <div className="bg-blue-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
                   <div className="text-blue-600">{step.icon}</div>
                 </div>
